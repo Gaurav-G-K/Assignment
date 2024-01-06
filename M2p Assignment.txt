@@ -1,0 +1,105 @@
+							M2P prep assignment                   Gaurav Kanaujiya(fw24_487)
+
+Question 1. Given an ArrayList of employees, demonstrate how you would filter employees whose names start with 'A', whose IDs are odd numbers, and whose ages are even numbers using Java Stream API. 
+
+Answer:-
+
+List<Employee> Employees = employees.stream()
+.filter(employee->employee.getName().charAt(0)=='A'&&employee.getId()%2!=0&&employee.getAge()%2==0).collect(Collectors.toList());
+
+—-----------------------------------------------------------------------------------------------------------------------
+
+Question 2. Given an ArrayList of integers, use the Stream API to: 
+○ Filter out even numbers and collect them into a new list. 
+○ Calculate the sum of the squared values of these even numbers
+
+Answer (1) :-
+List<Integer> evenNum = numbers.stream().filter(n -> n % 2 == 0).collect(Collectors.toList());
+
+Answer (2):-  we take list from answer(1) and perform operation
+long sum = evenNum.stream().map(n -> n * n).reduce(0,(a,b)->a+b);
+
+—------------------------------------------------------------------------------------------------------------------------
+
+Question 3. Given a list of strings, implement a Java method using Stream API to find the longest string(s) in the list. Additionally, ensure that if multiple strings have the same maximum length, all of them are included in the result. 
+
+Answer :-  first find the longest length of the string of list
+int maxLength = strings.stream().map(String->String.length()).reduce(0,(a,b)->a>b?a:b);
+After finding length filter it out from the list who has length is equal to maxLength;
+List<String> str= list.stream().filter(s ->s.length()==maxLength).collect(Collectors.toList());
+
+—-----------------------------------------------------------------------------------------------------------------------
+
+Question 4. Write code demonstrating the difference between Stream and Parallel Stream in Java. Provide a scenario where using Parallel Stream could significantly improve performance. 
+Answer ➖In Stream we access and perform the operation on data of list sequentially but in Parallel Stream it divides the list in and access or perform the operation parallelly because of it perform operation on multiple data at a same time so it will very efficient in performance . So when need to only perform the operation or when we didn’t need the data sequentially that time we use parallel stream otherwise we use normal Stream; 
+Example:-
+import java.util.Arrays;
+import java.util.List;
+
+public class Test {
+	
+	static long start;
+	public static void main(String[] args) {
+		List<Integer> list=Arrays.asList(1,2,3,4,5,6,7,8,9,10);
+		System.out.println("normal stream");
+		start=System.currentTimeMillis();
+		list.stream().forEach(System.out::println);
+		System.out.println("Time taken "+(System.currentTimeMillis()-start)+” milliseconds”);
+		System.out.println("++++++++++++++++++++++++++++++++");
+		System.out.println("Parallel Stream");
+		start=System.currentTimeMillis();
+		list.parallelStream().forEach(System.out::println);
+		System.out.println("Time taken "+(System.currentTimeMillis()-start)+“ milliseconds”);
+		
+	}
+}
+
+OUTPUT
+normal stream
+1
+2
+3
+4
+5
+6
+7
+89
+10
+Time taken 12 milliseconds
+++++++++++++++++++++++++++++++++
+Parallel Stream
+6
+73
+9
+10
+4
+5
+1
+28
+Time taken 8 milliseconds
+
+In above example we can see when we are using normal Stream that time it is printing number in the given order but taking 12 milliseconds but same as when we are using parallel stream that time numbers are randomly printing but time taken is only 8 milliseconds .
+
+—-----------------------------------------------------------------------------------------------------------------------
+
+Question 5. Develop a Spring Boot endpoint that updates Student records in a database. Identify the correct HTTP method for this action and ensure the endpoint accepts JSON-formatted data to modify student information.
+
+Assume that we have create other classes like service and repo
+@RestController
+@RequestMapping("/students")
+public class StudentController {
+@Autowired
+private StudentService studentService;
+@PutMapping("updateStudent")
+public ResponseEntity<String> updateStudent(@RequestBody Student student){
+boolean updatedDetails=studentService.updateStudent(student);
+if(updatedDetails){
+return ResponseEntity<String>("Student record updated successfully",HttpStatus.OK);
+}
+else
+{
+return ResponseEntity<String>("Student not found”,HttpStatus.NOT_FOUND);
+}
+}
+}
+
